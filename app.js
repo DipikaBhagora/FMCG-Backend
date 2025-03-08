@@ -1,9 +1,11 @@
 const express = require("express")
 const mongoose = require("mongoose")
+const cors = require("cors")
 
 //express obj
 const app = express()
 app.use(express.json()) //to accept data as json
+app.use(cors())
 
 //roleRoutes
 const roleRoutes = require("./src/routes/RoleRoutes")
