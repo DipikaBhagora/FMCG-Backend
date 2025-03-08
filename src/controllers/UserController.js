@@ -1,8 +1,73 @@
 const userModel = require("../models/UserModel")
+const bcrypt = require("bcrypt")
 
 //login
+const loginUser = async(req,res) =>{
+    //req.body email and password: password(encryption)
+
+   //password -->plain -->db -->encrypted
+   //bcrypt  --> plain,enc --> match : true
+
+   const email = req.body.email;
+   const password = req.body.password;
+   //userModel.find({email:email,password:password})
+  //email --> object -->abc --{password:hashedPassword}
+  //normal password compare -->
+
+  //const foundUserEmail = userModel.findOne({ email:req.body.email })
+  const foundUserFromEmail = await userModel.findOne({ email: email }).populate("roleId")
+  console.log(foundUserFromEmail);
+ 
+  //check if email exist or not
+  if(foundUserFromEmail != null){
+    //password
+    //normal -plain req.bodyy --- databse -->match  --> true | false
+    const isMatch = bcrypt.compareSync(password, foundUserFromEmail.password);
+    //true | false
+    if(isMatch == true){
+        
+        res.status(200).json({
+            message:"Login Success..",
+            data:foundUserFromEmail,
+            
+        })
+    }else{
+        res.status(404).json({
+            message:"Invalid credentials..",
+        })
+    }
+    }else{
+        res.status(404).json({
+           message:"Email not found.."
+        })
+    }
+  }
+  
+
 
 //signup
+const signupUser = async(req,res)=>{
+    try{
+        //password encrypt
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+        req.body.password = hashedPassword;
+
+        const createdUser = await userModel.create(req.body);
+        //console.log(createdUser);
+        
+        res.status(201).json({
+            message:"user created successfully..",
+            data:createdUser,
+        })
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            message:"error",
+            data:err,
+        })
+    }
+}
 
 //getallusers
 const getAllUsers = async(req,res)=>{
@@ -39,8 +104,8 @@ const getUserById = async(req,res)=>{
 }
 
 module.exports = {
-    // loginUser,
-    // signupUser,
+    loginUser,
+    signupUser,
     getAllUsers,
     addUser,
     deleteUser,
