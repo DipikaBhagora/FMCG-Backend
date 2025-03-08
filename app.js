@@ -5,6 +5,14 @@ const mongoose = require("mongoose")
 const app = express()
 app.use(express.json()) //to accept data as json
 
+//roleRoutes
+const roleRoutes = require("./src/routes/RoleRoutes")
+app.use(roleRoutes)
+
+//userRoutes
+const userRoutes = require("./src/routes/UserRoutes")
+app.use(userRoutes)
+
 mongoose.connect("mongodb://localhost:27017/25_node_internship").then(() =>{
     console.log("database connected...")
 })
