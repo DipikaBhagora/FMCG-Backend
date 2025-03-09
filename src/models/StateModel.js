@@ -10,4 +10,4 @@ const stateSchema = new Schema({
 },{
     timestamps: true
 })
-module.exports = mongoose.model('state', stateSchema);
+module.exports = mongoose.model("state", stateSchema);
