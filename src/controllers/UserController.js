@@ -1,5 +1,6 @@
 const userModel = require("../models/UserModel")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt") //pass encrypt
+const mailUtil = require("../utils/MailUtil") //importing from utils
 
 //login
 const loginUser = async(req,res) =>{
@@ -54,8 +55,12 @@ const signupUser = async(req,res)=>{
         req.body.password = hashedPassword;
 
         const createdUser = await userModel.create(req.body);
-        //console.log(createdUser);
-        
+        //console.log(createdUser);       
+
+        //send mail to user
+        //const mailResponse = await mailUtil.sendingMail(createdUser.email,"welcome to fmcg","welcome to our service") //mail response
+        await mailUtil.sendingMail(createdUser.email,"welcome to fmcg","welcome to our service")
+
         res.status(201).json({
             message:"user created successfully..",
             data:createdUser,
