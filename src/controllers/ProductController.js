@@ -81,10 +81,26 @@ const addProductWithFile = async(req,res) =>{
             })
         }
     })
-
 }
 
-//getallproducts
+//getallproductsbyuserId
+const getAllProductsBySellerId = async(req, res) =>{
+    try{
+        const products = await productModel.find({sellerId:req.params.sellerId}).populate("categoryId subCategoryId sellerId");
+        if(products.length === 0){
+            res.status(404).json({message: "NO PRODUCTS FOUND"})
+        }else{
+            res.status(200).json({
+                message:"Products found successfully..",
+                data: products,
+            })
+        }
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
+
+//getallproducts //for admin
 const getProducts = async(req,res)=>{
     try{
         const getallproducts = await productModel.find().populate('categoryId subCategoryId sellerId')
@@ -136,5 +152,6 @@ module.exports = {
     getProducts,
     getProductById,
     deleteProduct,
-    addProductWithFile
+    addProductWithFile,
+    getAllProductsBySellerId
 }

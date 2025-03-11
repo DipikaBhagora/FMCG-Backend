@@ -1,4 +1,4 @@
- const cloudinary = require("cloudinary").v2;
+ const cloudinary = require("cloudinary").v2; 
 
  const uploadFileToCloudinary = async(file) =>{
 
@@ -9,7 +9,7 @@
         api_secret:"pBt_Ipo7GaNROh_9wpkv8gDTvFw"
     })
 
-    const cloudinaryResponse = await cloudinary.uploader.upload(file.path);
+    const cloudinaryResponse = await cloudinary.uploader.upload(file.path)
     return cloudinaryResponse;
 
  }
