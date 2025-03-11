@@ -1,10 +1,11 @@
 const productModel = require("../models/ProductModel");
 const multer = require("multer") //file uploadinng
 const path = require("path") //for file path
+const cloudinaryUtil = require("../utils/CloudinaryUtil");
 
 //storage engine
 const storage = multer.diskStorage({
-    destination: "./uploads",
+    //destination: "./uploads",
     filename: function(req,file,cb){
         cb(null,file.originalname)
     }
@@ -33,28 +34,6 @@ const addProduct = async(req,res)=>{
 }
 
 //addProudctwithfile for local storage
-const addProductWithFile = async(req,res) =>{
-
-    upload(req,res,(err) =>{
-        if(err){
-            res.status(500).json({
-                message:err.message
-            })
-        }else{
-            //to store data in database
-            //claudinary
-            console.log(req.body)
-            res.status(200).json({
-                message:"File uploaded successfully",
-                data:req.file
-            })
-
-        }
-    })
-
-}
-
-//addProudctwithfile for cloud storage //fileupload --> image --> cloudanry: -->respinse ---> url : url -->database...
 // const addProductWithFile = async(req,res) =>{
 
 //     upload(req,res,(err) =>{
@@ -65,13 +44,45 @@ const addProductWithFile = async(req,res) =>{
 //         }else{
 //             //to store data in database
 //             //claudinary
-           
-
+//             console.log(req.body)
+//             res.status(200).json({
+//                 message:"File uploaded successfully",
+//                 data:req.file
+//             })
 
 //         }
 //     })
 
 // }
+
+//addProudctwithfile for cloud storage //fileupload --> image --> cloudanry: -->respinse ---> url : url -->database...
+const addProductWithFile = async(req,res) =>{
+
+    upload(req,res,async(err) =>{
+        if(err){
+            res.status(500).json({
+                message:err.message
+            })
+        }else{
+            //to store data in database
+            //claudinary
+           const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+           console.log(cloudinaryResponse);
+           console.log(req.body);
+
+            //to store data in database 
+            req.body.productImages = cloudinaryResponse.secure_url;
+            
+            const savedproductimages = await productModel.create(req.body);
+
+            res.status(200).json({
+                message:"Product with image saved successfully..",
+                data:savedproductimages
+            })
+        }
+    })
+
+}
 
 //getallproducts
 const getProducts = async(req,res)=>{

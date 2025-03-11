@@ -15,8 +15,8 @@ const sendingMail = async(to,subject,text) =>{
         from: 'dipikabhagora008@gmail.com',
         to: to,
         subject:subject,
-        text: text
-        //html: "<h1>"+text+"</h1>"
+        //text: text
+        html: "<h1>"+text+"</h1>"
     }
 
     const mailresponse = await transporter.sendMail(mailOptions);
