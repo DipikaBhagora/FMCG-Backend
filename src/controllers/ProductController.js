@@ -84,9 +84,9 @@ const addProductWithFile = async(req,res) =>{
 }
 
 //getallproductsbyuserId
-const getAllProductsBySellerId = async(req, res) =>{
+const getAllProductsByUserId = async(req, res) =>{
     try{
-        const products = await productModel.find({sellerId:req.params.sellerId}).populate("categoryId subCategoryId sellerId");
+        const products = await productModel.find({userId:req.params.userId}).populate("categoryId subCategoryId userId");
         if(products.length === 0){
             res.status(404).json({message: "NO PRODUCTS FOUND"})
         }else{
@@ -103,7 +103,7 @@ const getAllProductsBySellerId = async(req, res) =>{
 //getallproducts //for admin
 const getProducts = async(req,res)=>{
     try{
-        const getallproducts = await productModel.find().populate('categoryId subCategoryId sellerId')
+        const getallproducts = await productModel.find().populate('categoryId subCategoryId userId')
         res.status(200).json({
             message:"All products",
             data: getallproducts
@@ -115,14 +115,43 @@ const getProducts = async(req,res)=>{
     }
 }
 
+//updateproduct
+const updateProduct = async(req,res) => {
+      //update tablename set  ? where id = ?
+  //update new data -->req.body
+  //id -->req.params.id
+
+  try{
+    const updateproduct = await productModel.findByIdAndUpdate
+    (req.params.id,
+    req.body,
+    { new: true }
+    );
+    res.status(200).json({
+        message: "Product updated successfully..",
+        data: updateproduct,
+    })
+
+  }catch(err){
+    res.status(500).json({
+        message:err.message
+})
+  }
+}
+
 //getproductbyid
 const getProductById = async(req,res)=>{
     try{
-        const getproductbyid = await productModel.findById(req.params.id).populate('categoryId subCategoryId sellerId');
+        const getproductbyid = await productModel.findById(req.params.id).populate('categoryId subCategoryId userId');
+        if(!getproductbyid){
+            res.status(404).json({message:"NO PRODUCTS FOUND"});
+        }
+       else{
         res.status(200).json({
             message:"Product found",
             data:getproductbyid
         })
+    } 
     }catch(err){
         res.status(500).json({
             message:err.message
@@ -153,5 +182,6 @@ module.exports = {
     getProductById,
     deleteProduct,
     addProductWithFile,
-    getAllProductsBySellerId
+    getAllProductsByUserId,
+    updateProduct
 }

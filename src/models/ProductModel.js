@@ -16,9 +16,9 @@ const productSchema = new Schema({
         ref:"subcategory",
         required:true
     },
-    sellerId:{
+    userId:{
         type:Schema.Types.ObjectId,
-        ref:"roles",
+        ref:"users",
         required:true
     },
     basePrice:{
