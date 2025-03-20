@@ -34,7 +34,7 @@ const deleteOrder = async(req,res) =>{
 //getallorders
 const getOrders = async(req,res) =>{
     try{
-        const getallorders = await ordersModel.find()
+        const getallorders = await ordersModel.find().populate("userId")
         res.status(200).json({
             message:"All Orders Fetched Successfully",
             data:getallorders,

@@ -46,8 +46,24 @@ const deleteCart = async(req,res) => {
     }
 }
 
+//getcartbyid
+const getCartById = async(req,res) => {
+    try{
+        const getcartbyid = await cartModel.findById(req.params.id).populate("userId productId quantity")
+        res.status(200).json({
+            message:"Cart is here",
+            data:getcartbyid
+        })
+    }catch(err){
+        res.status(500).json({
+            message:err.message,
+        })
+    }
+}
+
 module.exports = {
     addCart,
     updateCart,
     deleteCart,
+    getCartById
 }
