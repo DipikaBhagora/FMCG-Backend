@@ -35,6 +35,21 @@ app.use("/subcategory",subcategoryRoutes)
 const productRoutes = require("./src/routes/ProductRoutes")
 app.use("/product",productRoutes)
 
+//userAddresRoutes
+const userAddressRoutes = require("./src/routes/UserAddressRoutes")
+app.use("/address",userAddressRoutes)
+
+//cartRoutes
+const cartRoutes = require("./src/routes/CartRoutes")
+app.use("/cart",cartRoutes)
+
+//ordersRoutes
+const ordersRoutes = require("./src/routes/OrdersRoutes")
+app.use("/orders",ordersRoutes)
+
+
+
+
 mongoose.connect("mongodb://localhost:27017/25_node_internship").then(() =>{
     console.log("database connected...")
 })
