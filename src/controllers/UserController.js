@@ -101,12 +101,22 @@ const deleteUser = async(req,res)=>{
 }
 //getuserbyid
 const getUserById = async(req,res)=>{
-    const foundUser = await userModel.findById(req.params.id);
-    res.json({
-        message:"Respective user fetched successfully..",
-        data:foundUser
-    })
-}
+    // const foundUser = await userModel.findById(req.params.id).populate("roleId");
+    // res.json({
+    //     message:"Respective user fetched successfully..",
+    //     data:foundUser
+    // })
+    try {
+        const foundUser = await userModel.findById(req.params.id).populate("roleId"); // Populate role
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ message: "User fetched successfully", data: foundUser });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
 
 module.exports = {
     loginUser,

@@ -5,7 +5,7 @@ const addAddress = async(req, res) => {
     try{
         const addaddress = await userAddressModel.create(req.body);
         res.status(201).json({
-            message:"Address added succesfully",
+            message:"Address added successfully",
             data: addaddress,
         })
     }catch(err){
@@ -51,7 +51,7 @@ const getAddressByUserId = async(req, res) => {
         const findaddress = await userAddressModel.find({userId:req.params.userId}).populate("userId cityId stateId")
         res.status(200).json({
             message:"Particular user address data is found",
-            data: findaddress,
+            data: findaddress
         })
     }catch(err){
         res.status(500).json({
@@ -59,6 +59,16 @@ const getAddressByUserId = async(req, res) => {
         })
     }
 }
+
+//getaddessbyid
+const getAddressById = async(req,res)=>{
+    const foundAddress = await userAddressModel.findById(req.params.id);
+    res.json({
+        message:"Respective user fetched successfully..",
+        data:foundAddress
+    })
+}
+
 
 //updateaddress
 const updateAddress = async(req,res) => {
@@ -81,5 +91,6 @@ module.exports = {
     getAllAddress,
     deleteAddress,
     getAddressByUserId,
-    updateAddress
+    updateAddress,
+    getAddressById
 }

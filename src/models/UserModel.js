@@ -3,13 +3,16 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema({
     firstName:{
-        type:String
+        type:String,
+        required: true,
     },
     lastName:{
         type:String
     },
     age:{
-        type:Number
+        type:Number,
+        min:10,
+        max:80,
     },
     status:{
         type:Boolean,
@@ -20,12 +23,17 @@ const userSchema = new Schema({
         ref:"roles"
     },
     password:{
-        type:String
+        type:String,
+        required:true,
     },
     email:{
         type:String,
-        unique:true
+        required:true,
+        unique:true,
+        match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
     }
-})
+},
+    {timestamps: true}
+)
 
 module.exports = mongoose.model("users",userSchema)

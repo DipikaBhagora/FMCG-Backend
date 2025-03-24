@@ -23,11 +23,13 @@ const productSchema = new Schema({
     },
     basePrice:{
         type:Number,
-        required:true
+        required:true,
+        min: 0, //prevent -ve price
     },
     offerPrice:{
         type:Number,
-        required:true
+        required:true,
+        min: 0,
     },
     offerPercentage:{
         type:Number,
@@ -43,7 +45,9 @@ const productSchema = new Schema({
     },
     quantity:{
         type:Number,
-        required:true
+        required:true,
+        min:0, //prevent -ve stock
+        default: 0,
     },
     // createdAt:{
     //     type:Date,
@@ -52,5 +56,10 @@ const productSchema = new Schema({
 },{
     timestamps: true
 })
-
+// productSchema.virtual("offerPercentage").get(function () {
+//     if (this.basePrice > 0) {
+//         return Math.round(((this.basePrice - this.offerPrice) / this.basePrice) * 100);
+//     }
+//     return 0;
+// });
 module.exports = mongoose.model("product",productSchema)

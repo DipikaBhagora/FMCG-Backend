@@ -6,5 +6,6 @@ routes.get("/getalladdress",userAddressController.getAllAddress);
 routes.get("/getaddressbyuserid/:userId",userAddressController.getAddressByUserId);
 routes.put("/updateaddress/:id",userAddressController.updateAddress);
 routes.delete("/deleteaddress/:id",userAddressController.deleteAddress);
+routes.get("/getaddressbyid/:id",userAddressController.getAddressById)
 
 module.exports = routes
