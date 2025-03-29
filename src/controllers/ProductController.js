@@ -174,7 +174,24 @@ const deleteProduct = async(req,res)=>{
     }
 }
 
-//updateproduct
+// Get products by subCategoryId
+const getProductsBySubCategoryId = async (req, res) => {
+    try {
+        const products = await productModel.find({ subCategoryId: req.params.subCategoryId })
+            .populate("categoryId subCategoryId userId");
+
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No products found for this sub-category" });
+        }
+
+        res.status(200).json({
+            message: "Products fetched successfully",
+            data: products,
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 module.exports = {
     addProduct,
@@ -183,5 +200,6 @@ module.exports = {
     deleteProduct,
     addProductWithFile,
     getAllProductsByUserId,
-    updateProduct
+    updateProduct,
+    getProductsBySubCategoryId
 }
