@@ -47,7 +47,9 @@ app.use("/cart",cartRoutes)
 const ordersRoutes = require("./src/routes/OrdersRoutes")
 app.use("/orders",ordersRoutes)
 
-
+//contactUs
+const contactusRoutes = require("./src/routes/ContactUsRoutes")
+app.use("/contactus",contactusRoutes)
 
 
 mongoose.connect("mongodb://localhost:27017/25_node_internship").then(() =>{
