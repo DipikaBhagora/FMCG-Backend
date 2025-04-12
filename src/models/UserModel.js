@@ -14,6 +14,10 @@ const userSchema = new Schema({
         min:10,
         max:80,
     },
+    number:{
+        type:Number,
+        min:10,
+    },
     status:{
         type:Boolean,
         default:true
