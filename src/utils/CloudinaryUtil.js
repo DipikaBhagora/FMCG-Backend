@@ -4,9 +4,9 @@
 
     //config
     cloudinary.config({
-        cloud_name:"dsu2usoxu",
-        api_key:"369259867468831",
-        api_secret:"pBt_Ipo7GaNROh_9wpkv8gDTvFw"
+        cloud_name:"",
+        api_key:"",
+        api_secret:""
     })
 
     const cloudinaryResponse = await cloudinary.uploader.upload(file.path)

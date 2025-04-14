@@ -49,6 +49,8 @@ const productSchema = new Schema({
         min:0, //prevent -ve stock
         default: 0,
     },
+   
+  actualStock: { type: Number, required: true, min: 0, default: 0 },
     // createdAt:{
     //     type:Date,
     //     default: Date.now
