@@ -1,20 +1,6 @@
 const ordersModel = require("../models/OrdersModel");
 const Product = require("../models/ProductModel");
 
-//addorder
-// const addOrder = async(req,res) =>{
-//     try{
-//         const addorder = await ordersModel.create(req.body);
-//         res.status(201).json({
-//             message :"Order is added",
-//             data: addorder,
-//         })
-//     }catch(err){
-//         res.status(500).json({
-//             message:message.err
-//         })
-//     }
-// }
 const addOrder = async (req, res) => {
     const { userId, items, totalAmount } = req.body;
   
@@ -25,22 +11,24 @@ const addOrder = async (req, res) => {
         status: 'Pending',
         totalAmount,
       });
+
+      //Temporarily skip stock update
        // Loop through items and reduce actualStock
-    await Promise.all(
-        items.map(async (item) => {
-          const product = await Product.findById(item.productId);
-          if (!product) {
-            throw new Error(`Product with ID ${item.productId} not found`);
-          }
+    // await Promise.all(
+    //     items.map(async (item) => {
+    //       const product = await Product.findById(item.productId);
+    //       if (!product) {
+    //         throw new Error(`Product with ID ${item.productId} not found`);
+    //       }
   
-          if (product.actualStock < item.quantity) {
-            throw new Error(`Insufficient stock for ${product.productName}`);
-          }
+    //       if (product.actualStock < item.quantity) {
+    //         throw new Error(`Insufficient stock for ${product.productName}`);
+    //       }
   
-          product.actualStock -= item.quantity;
-          await product.save();
-        })
-      );
+    //       product.actualStock -= item.quantity;
+    //       await product.save();
+    //     })
+    //   );
   
       res.status(201).json({
         message: "Order placed successfully and stock updated.",
@@ -74,20 +62,106 @@ const deleteOrder = async(req,res) =>{
 //getallorders
 const getOrders = async(req,res) =>{
     try{
-        const getallorders = await ordersModel.find().populate("userId")
+        const getallorders = await ordersModel.find().populate("userId");
         res.status(200).json({
             message:"All Orders Fetched Successfully",
             data:getallorders,
         })
     }catch(err){
         res.status(500).json({
-            message:message.err
+            message:err.message,
         })
     }
 }
 
+
+const updatePaymentStatus = async (req, res) => {
+  try {
+    const { orderId, paymentStatus } = req.body;
+    const updatedOrder = await ordersModel.findByIdAndUpdate(
+      orderId,
+      { paymentStatus, status: paymentStatus === "Paid" ? "Done" : "Pending" },
+      { new: true }
+    );
+    res.status(200).json({ message: "Payment status updated", data: updatedOrder });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//razorpay 
+const Razorpay = require("razorpay");
+
+// Initialize Razorpay with your credentials
+const razorpay = new Razorpay({
+  key_id: process.env.key_id, 
+  key_secret: process.env.key_secret, 
+});
+
+// Create Razorpay Order Function
+const createRazorpayOrder = async (req, res) => {
+  try {
+    // Extract the amount from the request body (in INR)
+    const { amount } = req.body;
+
+    // Validate that the amount is a valid number
+    if (!amount || isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ message: "Invalid amount" });
+    }
+
+    // Razorpay order creation options
+    const options = {
+      amount: amount * 100, // Convert INR to paisa (Razorpay expects amount in paisa)
+      currency: "INR", // Currency is INR
+      receipt: `receipt_order_${Math.floor(Math.random() * 10000)}`, // Generate a unique receipt number
+      payment_capture: 1, // Automatically capture payment once successful
+    };
+
+    // Create order with Razorpay API
+    const order = await razorpay.orders.create(options);
+
+    // Return the order details
+    return res.status(200).json({
+      orderId: order.id,
+      amount: order.amount, // Amount in paisa
+      currency: order.currency, // Currency (INR)
+    });
+  } catch (err) {
+    console.error("Error creating Razorpay order:", err);
+    return res.status(500).json({
+      message: "Razorpay order creation failed",
+      error: err.message, // Include the error message for debugging
+    });
+  }
+};
+
+// razorpay updatepaymentstatus
+const updatePaymentStatusRazorpay = async (req, res) => {
+  const { paymentId, orderId, status } = req.body;
+
+  try {
+    const order = await ordersModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Update order status after payment
+    order.status = status;
+    order.paymentId = paymentId; // Store Razorpay payment ID
+    await order.save();
+
+    res.status(200).json({ success: true, message: "Order updated" });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating payment status" });
+  }
+};
+
+
 module.exports = {
     addOrder,
     deleteOrder,
-    getOrders
+    getOrders,
+    updatePaymentStatus,
+    createRazorpayOrder,
+    updatePaymentStatusRazorpay
 }

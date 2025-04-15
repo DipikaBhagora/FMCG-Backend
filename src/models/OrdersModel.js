@@ -13,6 +13,11 @@ const ordersSchema = new Schema ({
     totalAmount:{
         type:Number,
     },
+    paymentStatus: {
+        type: String,
+        enum: ['Pending', 'Paid', 'Failed'],
+        default: 'Pending',
+      }
 },{
     timestamps: true
 })
