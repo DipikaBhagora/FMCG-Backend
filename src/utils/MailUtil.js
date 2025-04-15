@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 //to,from,subject,text
 const mailer = require('nodemailer') //sending mail
  
@@ -6,13 +8,13 @@ const sendingMail = async(to,subject,text) =>{
     const transporter = mailer.createTransport({
         service:'gmail',
         auth:{
-            user:"",
-            pass:""
+            user:process.env.user,
+            pass:process.env.pass
         }
     })
 
     const mailOptions = {
-        from: '',
+        from:process.env.from,
         to: to,
         subject:subject,
         //text: text
