@@ -12,7 +12,7 @@ const addCategory = async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
-  
+
   //getallcategories
   const getCategories = async (req, res) => {
     try {
@@ -30,7 +30,7 @@ const addCategory = async (req, res) => {
   const getCategoryById = async(req,res) =>{
     try{
       const getcategorybyid = await categoryModel.findById(req.params.id);
-      res.status(200).json({
+      res.status(200).json({  
         message:"category found",
         data: getcategorybyid
       })
@@ -56,4 +56,26 @@ const addCategory = async (req, res) => {
     }
 }
 
-  module.exports = { addCategory, getCategories, getCategoryById, deleteCategory};
+//updatecategory
+const updateCategory = async (req, res) => {
+  try {
+    const updatedCategory = await categoryModel.findByIdAndUpdate(
+      req.params.id,
+      { name: req.body.name },
+      { new: true }
+    );
+
+    res.json({
+      message: "Category updated successfully..",
+      Data: updatedCategory,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err,
+    });
+  }
+};
+
+
+
+  module.exports = { addCategory, getCategories, getCategoryById, deleteCategory, updateCategory};

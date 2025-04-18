@@ -51,6 +51,10 @@ app.use("/orders",ordersRoutes)
 const contactusRoutes = require("./src/routes/ContactUsRoutes")
 app.use("/contactus",contactusRoutes)
 
+//admindashboard
+const admindashboardRoutes = require("./src/routes/AdminDashboardRoutes")
+app.use("/admin",admindashboardRoutes)
+
 
 mongoose.connect("mongodb://localhost:27017/25_node_internship").then(() =>{
     console.log("database connected...")

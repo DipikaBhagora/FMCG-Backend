@@ -7,6 +7,7 @@ routes.delete("/deleteuser/:id",userController.deleteUser);
 routes.get("/getuser/:id",userController.getUserById);
 routes.post("/user/login",userController.loginUser);
 routes.post("/user/signup",userController.signupUser);
+routes.put("/updateuser/:id", userController.updateUserProfile)
 
 
 module.exports = routes;

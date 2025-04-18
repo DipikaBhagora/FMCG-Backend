@@ -1,13 +1,19 @@
 const ordersModel = require("../models/OrdersModel");
 const Product = require("../models/ProductModel");
 
+//add order
 const addOrder = async (req, res) => {
     const { userId, items, totalAmount } = req.body;
   
     try {
+      if (!items || items.length === 0) {
+        return res.status(400).json({ message: "No items provided" });
+      }
+
       // Create the order
       const newOrder = await ordersModel.create({
         userId,
+        items, // Now items will be saved in db
         status: 'Pending',
         totalAmount,
       });
@@ -62,7 +68,7 @@ const deleteOrder = async(req,res) =>{
 //getallorders
 const getOrders = async(req,res) =>{
     try{
-        const getallorders = await ordersModel.find().populate("userId");
+        const getallorders = await ordersModel.find().populate("userId").populate("items.productId", "productName price");
         res.status(200).json({
             message:"All Orders Fetched Successfully",
             data:getallorders,
@@ -156,6 +162,28 @@ const updatePaymentStatusRazorpay = async (req, res) => {
   }
 };
 
+// Get Order Details by orderId
+const getOrderDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Find the order by its ID
+    const order = await ordersModel.findById(id)
+      .populate("userId", "firstName lastName email number") // Populate user details if needed
+      .populate("items.productId", "productName offerPrice quantity"); // Populate product details in the order
+
+    if (!order) {
+      return next(new ErrorHandler("Order not found", 404));
+    }
+
+    res.status(200).json({
+      message: "Order details fetched successfully",
+      data: order,
+    });
+  } catch (err) {
+    next(err); // Pass the error to the global error handler
+  }
+};
 
 module.exports = {
     addOrder,
@@ -163,5 +191,6 @@ module.exports = {
     getOrders,
     updatePaymentStatus,
     createRazorpayOrder,
-    updatePaymentStatusRazorpay
+    updatePaymentStatusRazorpay,
+    getOrderDetails
 }

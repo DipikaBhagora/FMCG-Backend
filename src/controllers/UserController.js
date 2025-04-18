@@ -59,7 +59,7 @@ const signupUser = async(req,res)=>{
 
         //send mail to user
         //const mailResponse = await mailUtil.sendingMail(createdUser.email,"welcome to fmcg","welcome to our service") //mail response
-        await mailUtil.sendingMail(createdUser.email,"welcome to fmcg","welcome to our service")
+        await mailUtil.sendingMail(createdUser.email,"Welcome to FMCG","Welcome to our FMCG service")
 
         res.status(201).json({
             message:"user created successfully..",
@@ -117,6 +117,37 @@ const getUserById = async(req,res)=>{
     }
 };
 
+const updateUserProfile = async (req, res) => {
+    const { id } = req.params;
+    const { firstName, lastName, email, number } = req.body;
+
+    try {
+        const user = await userModel.findById(id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        user.firstName = firstName || user.firstName;
+        user.lastName = lastName || user.lastName;
+        user.email = email || user.email;
+        user.number = number || user.number;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            data: user
+        });
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
 
 module.exports = {
     loginUser,
@@ -124,5 +155,6 @@ module.exports = {
     getAllUsers,
     addUser,
     deleteUser,
-    getUserById
+    getUserById, 
+    updateUserProfile
 }

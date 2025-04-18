@@ -6,6 +6,13 @@ const ordersSchema = new Schema ({
         type:Schema.Types.ObjectId,
         ref:"users"
     },
+    items: [
+        {
+          productId: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
+          productName: String,
+          offerPrice: Number,
+        },
+      ],
     status:{
         enum: ['Pending','Shipped','Delivered','Cancelled'],
         type: String

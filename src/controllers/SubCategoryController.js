@@ -71,4 +71,27 @@ const addSubcategory = async (req, res) => {
     }
 }
 
-  module.exports = { addSubcategory, getSubcategories, getSubCategoryByCategoryId, getSubCategoryById, deletesubcategory};
+//updatesubcategory
+const updateSubcategory = async (req, res) => {
+  try {
+    const updatedSubcategory = await subcategoryModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        categoryId: req.body.categoryId,
+      },
+      { new: true }
+    );
+
+    res.json({
+      message: "Subcategory updated successfully..",
+      Data: updatedSubcategory,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err,
+    });
+  }
+};
+
+  module.exports = { addSubcategory, getSubcategories, getSubCategoryByCategoryId, getSubCategoryById, deletesubcategory, updateSubcategory};

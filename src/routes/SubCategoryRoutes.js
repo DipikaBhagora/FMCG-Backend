@@ -5,6 +5,7 @@ routes.post("/addsubcategory",subcategoryController.addSubcategory);
 routes.get("/getsubcategories",subcategoryController.getSubcategories);
 routes.delete("/deletesubcategory/:id",subcategoryController.deletesubcategory);
 routes.get("/getsubcategory/:id",subcategoryController.getSubCategoryById);
-routes.get("/getsubcategorybycategory/:categoryId",subcategoryController.getSubCategoryByCategoryId)
+routes.get("/getsubcategorybycategory/:categoryId",subcategoryController.getSubCategoryByCategoryId);
+routes.put("/updatesubcategory/:id",subcategoryController.updateSubcategory);
 
 module.exports = routes;

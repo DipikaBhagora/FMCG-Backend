@@ -7,6 +7,7 @@ routes.delete("/deleteorder/:id",ordersController.deleteOrder);
 routes.patch("/updatepayment",ordersController.updatePaymentStatus);
 routes.post("/createrazorpayorder", ordersController.createRazorpayOrder);
 routes.patch("/updatepaymentrazorpay",ordersController.updatePaymentStatusRazorpay);
+routes.get("/getorderdetails/:id",ordersController.getOrderDetails)
 
 
 module.exports = routes;

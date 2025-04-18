@@ -9,10 +9,11 @@ const contactusSchema = new Schema({
     email:{
         type:String,
         requird:true,
-        unique:true
+       // unique:true
     },
     message:{
-        type:String
+        type:String,
+        requird:true,
     }
 },{
     timestamps:true
